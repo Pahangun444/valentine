@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Valentine 💘</title>
+  <style>
+    :root{
+      --font: "Comic Sans MS", "Comic Sans", "Chalkboard SE", "Comic Neue", cursive;
+    }
+    body{
+      margin:0;
+      height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: linear-gradient(135deg, #ffe6f2, #fff7d6);
+      font-family: var(--font);
+      overflow:hidden;
+    }
+    .card{
+      width:min(760px, 92vw);
+      background: rgba(255,255,255,0.9);
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: 0 18px 60px rgba(0,0,0,0.12);
+      text-align:center;
+    }
+    img.gif{
+      width:min(520px, 90%);
+      border-radius: 18px;
+      display:block;
+      margin: 6px auto 14px;
+    }
+    h1{
+      margin: 0 0 14px;
+      font-size: clamp(22px, 3.6vw, 34px);
+      font-weight: 700;
+    }
+    .btnRow{
+      display:flex;
+      gap: 14px;
+      justify-content:center;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-top: 10px;
+      position: relative;
+      min-height: 70px;
+    }
+    button{
+      font-family: var(--font);
+      font-size: 20px;
+      border: 0;
+      padding: 12px 20px;
+      border-radius: 999px;
+      cursor: pointer;
+      user-select:none;
+      transition: transform 80ms ease, font-size 140ms ease, padding 140ms ease;
+    }
+    button:active{ transform: scale(0.98); }
+
+    #yesBtn{
+      background:#ff2d7a;
+      color:white;
+      font-size: 22px;
+    }
+    #noBtn{
+      background:#222;
+      color:white;
+      position:absolute; /* so it can jump */
+      left: 52%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      touch-action:none; /* helps on mobile */
+    }
+
+    .tiny{
+      font-size: 14px;
+      opacity: 0.7;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card" id="app">
+    <img
+      class="gif"
+      src="https://media1.tenor.com/m/kutFNFXxSIsAAAAd/minion-minion-loves.gif"
+      alt="minion love gif"
+    />
+    <h1>Hi Sandu baba, will you be my valentine? 🥺👉👈</h1>
+
+    <div class="btnRow" id="btnRow">
+      <button id="yesBtn">YES 😍</button>
+      <button id="noBtn">NO 🙄</button>
+    </div>
+
+    <div class="tiny">(Choose wisely 😌)</div>
+  </div>
+
+  <script>
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn  = document.getElementById("noBtn");
+    const btnRow = document.getElementById("btnRow");
+    const app    = document.getElementById("app");
+
+    let noAttempts = 0;
+
+    // Keep NO button fully on screen when it jumps
+    function moveNoButton() {
+      noAttempts++;
+
+      // Make YES bigger each time she tries NO
+      const grow = Math.min(noAttempts, 12); // cap growth
+      const baseFont = 22;
+      const newFont = baseFont + grow * 2; // 22 -> up to ~46
+      yesBtn.style.fontSize = newFont + "px";
+      yesBtn.style.padding  = (12 + grow) + "px " + (20 + grow*2) + "px";
+
+      // Compute random position within viewport
+      const padding = 14;
+      const rect = noBtn.getBoundingClientRect();
+
+      const maxX = window.innerWidth  - rect.width  - padding;
+      const maxY = window.innerHeight - rect.height - padding;
+
+      const x = Math.max(padding, Math.random() * maxX);
+      const y = Math.max(padding, Math.random() * maxY);
+
+      noBtn.style.left = x + "px";
+      noBtn.style.top  = y + "px";
+      noBtn.style.transform = "translate(0,0)";
+    }
+
+    // Run away on hover (desktop), touch (mobile), and click (just in case)
+    noBtn.addEventListener("mouseenter", moveNoButton);
+    noBtn.addEventListener("click", (e) => { e.preventDefault(); moveNoButton(); });
+    noBtn.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      moveNoButton();
+    }, { passive: false });
+
+    // YES -> show the final screen
+    yesBtn.addEventListener("click", () => {
+      app.innerHTML = `
+        <img
+          class="gif"
+          src="https://media1.tenor.com/m/mleKzX6LUhkAAAAd/warr10r-lego.gif"
+          alt="lego love gif"
+        />
+        <h1>i love you &lt;3 - Pahan</h1>
+        <div class="tiny">(Screenshot this. Evidence. 😌)</div>
+      `;
+    });
+
+    // Optional: if window resizes, keep NO in-bounds next time
+    window.addEventListener("resize", () => {
+      // nothing needed, but you could reset transform if desired
+    });
+  </script>
+</body>
+</html>
